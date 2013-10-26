@@ -1,7 +1,9 @@
 QPGE: the Quantum Python Game Engine
 ====================================
 
-QPGE is a straightforward object-oriented interactive fiction game engine to demonstrate quantum algorithms for agent-based AI pathfinding, decisions, and heuristics.  As it is powered by D-Wave's Python Pack, it is only enjoyable to registered D-Wave developers (registration for the developer portal has been closed for quite some time).
+QPGE is a straightforward object-oriented interactive fiction game engine to demonstrate quantum algorithms for agent-based AI pathfinding, decisions, and heuristics.
+
+As it is powered by D-Wave's Python Pack, it is only enjoyable to registered D-Wave developers (registration for the developer portal has been closed for quite some time).
 
 System Requirements
 -------------------
