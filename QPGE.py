@@ -1,17 +1,18 @@
-#### ========================================================================================= ####
- ##                                                                                             ##
- ##        QUANTUM PYTHON GAME ENGINGE v0.4 alpha [[:with default test game:]]                  ##
- ##        by "the Phoeron" Colin J.E. Lupton                                                   ##
- ##                                                                                             ##
- ##        Copyright (c) 2012--2013, Studio Six-Ten I.D. Inc.                                   ##
- ##        See LICENSE for more information.                                                    ##
- ##        http://www.studio-six-ten.com/                                                       ##
- ##                                                                                             ##
-#### ========================================================================================= ####
+#### ===================================================================== ####
+ ##                                                                         ##
+ ##   QUANTUM PYTHON GAME ENGINGE v0.4 alpha [[:with default test game:]]   ##
+ ##   by "the Phoeron" Colin J.E. Lupton                                    ##
+ ##                                                                         ##
+ ##   Copyright (c) 2012--2013, Studio Six-Ten I.D. Inc.                    ##
+ ##   See LICENSE for more information.                                     ##
+ ##   http://www.studio-six-ten.com/                                        ##
+ ##                                                                         ##
+#### ===================================================================== ####
 
 # TO-DO:
 # Re-write engine to be CHARACTER-BASED instead of LOCATION-BASED.
-# Should offer more flexibility for the Heuristics, Pathfinding, and Decision Matrix
+# Should offer more flexibility for the Heuristics, Pathfinding, and Decision
+# Matrix
 
 from random import randint
 from operator import *
@@ -20,10 +21,11 @@ import sys
 banner = u"""
 +=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=+
 |                                                                             |
-|    QUANTUM PYTHON GAME ENGINGE v0.3 alpha [[:default game:]]                |
+|    QUANTUM PYTHON GAME ENGINGE v0.4 alpha [[:default game:]]                |
 |    by "the Phoeron" Colin J.E. Lupton                                       |
 |                                                                             |
-|    Copyright (c) 2012, Studio Six-Ten I.D. Inc.                             |
+|    Copyright (c) 2012--2013, Studio Six-Ten I.D. Inc.                       |
+|    See LICENSE for more information                                         |
 |    http://www.studio-six-ten.com/                                           |
 |                                                                             |
 +=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=+
@@ -34,7 +36,7 @@ message, the instantiation of the Game class and default room went according to
 plan.
 """
 
-#### Standard Actions ======================================================================== ####
+#### Standard Actions ==================================================== ####
 
 standard_actions = {
 	'walk': (
@@ -80,7 +82,7 @@ spacesuit_o2_level = 100
 enemy_distance = 100
 game_time = 0
 
-#### Common Elements ========================================================================= ####
+#### Common Elements ===================================================== ####
 
 spacer_left = " " * 21
 spacer = " " * 15
@@ -92,7 +94,7 @@ prompt_info = "Move: %s - ED: %s" % (game_time, enemy_distance)
 default_prompt = "\n \033[1;31m,=\033[1;30m[" + prompt_info + "]\033[1;31m" + ("=" * 68) + ".\n `=\033[1;30m#> \033[0m"
 
 
-#### THE PARENT ITEM CLASS =================================================================== ####
+#### THE PARENT ITEM CLASS =============================================== ####
 
 class Item(object):
 	"""
@@ -117,7 +119,7 @@ class Item(object):
 		# list_of_items.append(name)
 
 
-#### THE CHARACTER CLASSES =================================================================== ####
+#### THE CHARACTER CLASSES =============================================== ####
 
 class Character(object):
 	"""
@@ -149,12 +151,53 @@ class NPC(Character):
 	The 'NPC' (Non-Player Character) Class.
 	"""
 
+	def npc_look():
+		"""
+		NPC Character heuristics will go here
+		"""
+		# First of all the NPC has to check whether the player is in the room
+		# if not, then it looks for clues as to where the player might be
+
+	def npc_decision():
+		"""
+		NPC Character decision tree will go here
+		"""
+		# NPC uses heuristics from NPC.npc_look() to decide whether it should
+		# wait around to gather more evidence, travel elsewhere based on clues,
+		# or if it runs into the Player, attack, leave, etc.
+
+	def npc_travel():
+		"""
+		NPC Character pathfinding will go here
+		"""
+		# Extending on NPC.npc_decision(), the logic for moving through rooms
+		# goes here
+
+	def npc_interaction():
+		"""
+		NPC and Player interaction will go here
+		"""
+		# Depending on the decision from NPC.npc_decision(), a number of
+		# possible interactions could occur
+		# Interactions can be defined on the NPC character similar to special
+		# actions in rooms
+		# since interactions can easily be broken down into hostile, neutral,
+		# or friendly, this naturally maps to Ising problems, and the characters'
+		# mood can influence the decision tree
+
 	def npc(self):
 		character = self.character_dict
 		name = self.name
 		descr = self.descr
 		location = self.location
 		inventory = self.inventory
+
+		# when NPC.npc() is called, it needs to check where it is and look
+		# for evidence of player character (whether room is visited or not
+		# by player), try to guess which way the player went, and then update
+		# the pathfinding algorithm accordingly
+		# All of this should use the D-Wave SAPI, since that's the point of this
+		# game engine
 
 
 class Player(Character):
@@ -171,7 +214,7 @@ class Player(Character):
 		inventory = self.inventory
 		
 
-#### THE PARENT ROOM CLASS =================================================================== ####
+#### THE PARENT ROOM CLASS =============================================== ####
 
 class Room(object):
 	"""The Base Room Class"""
@@ -210,6 +253,9 @@ class Room(object):
 			if location == room_name:
 				local_items_list.append((item,title,descr,))
 
+		# Somewhere in the below code, a check is needed for NPC characters
+		# It makes sense if the usual room desription is overshadowed by the
+		# presence of an NPC
 		if current_room != room_name:
 			current_room = room_name
 
@@ -613,7 +659,7 @@ class Quit(Room):
 		sys.exit(0)
 
 
-#### MAIN INTERFACE AND GAME LOOP CLASSES ==================================================== ####
+#### MAIN INTERFACE AND GAME LOOP CLASSES ================================ ####
 
 class Map(object):
 	"""
@@ -728,6 +774,9 @@ class Game(object):
 		next_room_class = self.room_class
 		next_room_name = self.start_function
 
+		# NPC characters will have to be told to make their move here,
+		# and update their location before the player enters the room, so 
+		# they don't accidentally pass each other (which would be a bug)
 		while True:
 			room = getattr(next_room_class, next_room_name)
 			next_room_class = room()
@@ -747,4 +796,4 @@ Say = Say()
 # the_game = Game(default_room)
 # the_game.play()
 
-#### End of File ============================================================================= ####
+#### End of File ========================================================= ####
