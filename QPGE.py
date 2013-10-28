@@ -205,6 +205,8 @@ class Player(Character):
 	The 'Player' Character Class.
 	Multiple Player Characters can be instantiated.
 	"""
+	# This player class is not currently used by the engine
+	# A lot of the logic under Room should be moved here
 
 	def player(self):
 		character = self.character_dict
