@@ -208,6 +208,18 @@ class Player(Character):
 	# This player class is not currently used by the engine
 	# A lot of the logic under Room should be moved here
 
+	def player_look(self):
+		pass
+
+	def player_action(self):
+		pass
+
+	def player_move(self):
+		pass
+
+	def player_interaction(self):
+		pass
+
 	def player(self):
 		character = self.character_dict
 		name = self.name
